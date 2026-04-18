@@ -1,0 +1,205 @@
+#Task 1: Two Sum 
+def two_sum(nums, target):
+    d = {}
+    for i, n in enumerate(nums):
+        if target - n in d:
+            return [d[target - n], i]
+        d[n] = i
+
+
+# 2: First Unique Character
+def first_unique_char(s):
+    count = {}
+    for ch in s:
+        count[ch] = count.get(ch, 0) + 1
+
+    for i, ch in enumerate(s):
+        if count[ch] == 1:
+            return i
+    return -1
+
+
+# Task 3: Isomorphic Strings
+def is_isomorphic(s, t):
+    map_st, map_ts = {}, {}
+
+    for a, b in zip(s, t):
+        if (a in map_st and map_st[a] != b) or (b in map_ts and map_ts[b] != a):
+            return False
+        map_st[a] = b
+        map_ts[b] = a
+    return True
+
+
+#Task 4: Happy Number
+def is_happy(n):
+    seen = set()
+
+    while n != 1:
+        if n in seen:
+            return False
+        seen.add(n)
+
+        n = sum(int(d)**2 for d in str(n))
+    return True
+
+
+#Binary Tree Node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+#Task 5: Level Order Traversal
+def level_order(root):
+    if not root:
+        return []
+
+    res, queue = [], [root]
+
+    while queue:
+        level = []
+        for _ in range(len(queue)):
+            node = queue.pop(0)
+            level.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        res.append(level)
+    return res
+
+
+#Task 6: Max Depth
+def max_depth(root):
+    if not root:
+        return 0
+    return 1 + max(max_depth(root.left), max_depth(root.right))
+
+
+#Task 7: Symmetric Tree
+def is_symmetric(root):
+    def check(l, r):
+        if not l and not r:
+            return True
+        if not l or not r:
+            return False
+        return l.val == r.val and check(l.left, r.right) and check(l.right, r.left)
+
+    return check(root, root)
+
+
+#Task 8: Longest Consecutive Path
+def longest_consecutive(root):
+    def dfs(node, parent_val, length):
+        if not node:
+            return length
+
+        length = length + 1 if node.val == parent_val + 1 else 1
+
+        return max(
+            length,
+            dfs(node.left, node.val, length),
+            dfs(node.right, node.val, length)
+        )
+
+    return dfs(root, float('-inf'), 0)
+
+
+#Task 9: Sort Colors (Dutch Flag)
+def sort_colors(nums):
+    l, i, r = 0, 0, len(nums) - 1
+
+    while i <= r:
+        if nums[i] == 0:
+            nums[l], nums[i] = nums[i], nums[l]
+            l += 1
+            i += 1
+        elif nums[i] == 2:
+            nums[r], nums[i] = nums[i], nums[r]
+            r -= 1
+        else:
+            i += 1
+
+
+#Task 10: Quick Sort
+def quick_sort(nums):
+    def qs(l, r):
+        if l >= r:
+            return
+
+        pivot = nums[(l + r) // 2]
+        i, j = l, r
+
+        while i <= j:
+            while nums[i] < pivot:
+                i += 1
+            while nums[j] > pivot:
+                j -= 1
+
+            if i <= j:
+                nums[i], nums[j] = nums[j], nums[i]
+                i += 1
+                j -= 1
+
+        qs(l, j)
+        qs(i, r)
+
+    qs(0, len(nums) - 1)
+
+
+#Task 11: Merge Sort
+def merge_sort(nums):
+    if len(nums) <= 1:
+        return nums
+
+    mid = len(nums) // 2
+    left = merge_sort(nums[:mid])
+    right = merge_sort(nums[mid:])
+
+    return merge(left, right)
+
+
+def merge(a, b):
+    res = []
+    i = j = 0
+
+    while i < len(a) and j < len(b):
+        if a[i] < b[j]:
+            res.append(a[i])
+            i += 1
+        else:
+            res.append(b[j])
+            j += 1
+
+    return res + a[i:] + b[j:]
+
+
+#Task 12: Heap Sort
+def heap_sort(nums):
+    def heapify(n, i):
+        largest = i
+        l = 2 * i + 1
+        r = 2 * i + 2
+
+        if l < n and nums[l] > nums[largest]:
+            largest = l
+        if r < n and nums[r] > nums[largest]:
+            largest = r
+
+        if largest != i:
+            nums[i], nums[largest] = nums[largest], nums[i]
+            heapify(n, largest)
+
+    n = len(nums)
+
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(n, i)
+
+    for i in range(n - 1, 0, -1):
+        nums[i], nums[0] = nums[0], nums[i]
+        heapify(i, 0)
